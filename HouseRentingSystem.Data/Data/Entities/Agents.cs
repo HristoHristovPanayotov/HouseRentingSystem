@@ -1,16 +1,12 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static HouseRentingSystem.Data.Data.DataConstants.Agent;
+﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Identity;
+using static HouseRentingSystem.Data.DataConstants.Agent;
 
-namespace HouseRentingSystem.Data.Data.Entities
+namespace HouseRentingSystem.Data.Entities
 {
-    public class Agents
+    public class Agent
     {
+        [Key]
         public int Id { get; init; }
 
         [Required]
@@ -19,9 +15,6 @@ namespace HouseRentingSystem.Data.Data.Entities
 
         [Required]
         public string UserId { get; set; } = null!;
-
         public IdentityUser User { get; init; } = null!;
-
-        public IEnumerable<House> ManagedHouses { get; init; } = new List<House>();
     }
 }

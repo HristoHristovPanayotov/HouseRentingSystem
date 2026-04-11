@@ -1,4 +1,4 @@
-﻿using HouseRentingSystem.Data.Data.Entities;
+﻿using HouseRentingSystem.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace HouseRentingSystem.Data.Data
+﻿namespace HouseRentingSystem.Data
 {
     public class DataConstants
     {
@@ -13,7 +7,6 @@ namespace HouseRentingSystem.Data.Data
             public const int TitleMaxLength = 50;
             public const int AddressMaxLength = 150;
             public const int DescriptionMaxLength = 500;
-            
         }
 
         public class Category

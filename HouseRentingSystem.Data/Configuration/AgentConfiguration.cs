@@ -1,4 +1,4 @@
-﻿using HouseRentingSystem.Data.Data.Entities;
+﻿using HouseRentingSystem.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -10,26 +10,26 @@ using System.Threading.Tasks;
 
 namespace HouseRentingSystem.Data.Configuration
 {
-    public class AgentConfiguration : IEntityTypeConfiguration<Agents>
+    public class AgentConfiguration : IEntityTypeConfiguration<Agent>
     {
-        public void Configure(EntityTypeBuilder<Agents> builder)
+        public void Configure(EntityTypeBuilder<Agent> builder)
         {
             
             builder.HasData(SeedAgents());
         }
 
-        private IEnumerable<Agents> SeedAgents()
+        private IEnumerable<Agent> SeedAgents()
         {
-            return new Agents[]
+            return new Agent[]
             {
-                new Agents
+                new Agent
                 {
                     Id = 1,
                     PhoneNumber = "0885197043",
                     UserId = "1"
                 },
 
-                new Agents
+                new Agent
                 {
                     Id = 1,
                     PhoneNumber = "0885197043",

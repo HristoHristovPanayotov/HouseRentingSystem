@@ -1,42 +1,109 @@
-﻿using HouseRentingSystem.Models;
+﻿using HouseRentingSystem.Data;
+using HouseRentingSystem.Models.Houses;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace HouseRentingSystem.Controllers
 {
-	public class HouseController : Controller
-	{
-		private List<HouseViewModel> houses = new List<HouseViewModel>()
-		{
-			new HouseViewModel()
-			{   Id = 1,
-				Name = "Beach house",
-				Address = "Miami, Florida",
-				ImageUrl = @"https://i.ytimg.com/vi/Y4gLQQrKf1E/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLDF-Ss8WtuTN_zmjUqGsuJa5rpJIw"
-			},
-			new HouseViewModel()
-			{
-				Id=2,
-				Name = "Mountain house",
-				Address = "Rila Mountain, Bulgaria",
-				ImageUrl = @"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR8LkVGvrwA_10W1Jizdesx9DmZeydC1wh5IA&s"
-			},
-			new HouseViewModel()
-			{
-				Id=3,
-				Name = "Urban House",
-				Address = "Lulin, Sofia, Bulgaria",
-				ImageUrl = @"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRO3CW-ztFIRbSl2yNpP7LtSBEkZ92ZOaPeDg&s"
-			}
-		};
-		public IActionResult AllHouses()
-		{
-			return View(houses);
-		}
+    public class HousesController : Controller
+    {
+        private readonly HouseRentingDbContext data;
 
-		public IActionResult Details(int id)
-		{
-			return View(houses.FirstOrDefault(h => h.Id == id));
-		}
+        public HousesController(HouseRentingDbContext _data)
+        {
+            this.data = _data;
+        }
 
-	}
+        public IActionResult All()
+        {
+            var houses = this.data.Houses
+                .Select(h => new HouseViewModel
+                {
+                    Id = h.Id,
+                    Title = h.Title,
+                    Address = h.Address,
+                    ImageUrl = h.ImageUrl,
+                    PricePerMonth = h.PricePerMonth,
+                    IsRented = h.RenterId != null
+                })
+                .ToList();
+
+            return View(houses);
+        }
+
+        [Authorize]
+        public IActionResult Mine()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var houses = new List<HouseViewModel>();
+
+            if (this.data.Agents.Any(a => a.UserId == userId))
+            {
+                var agentId = this.data.Agents
+                    .First(a => a.UserId == userId).Id;
+
+                houses = this.data.Houses
+                    .Where(h => h.AgentId == agentId)
+                    .Select(h => new HouseViewModel
+                    {
+                        Id = h.Id,
+                        Title = h.Title,
+                        Address = h.Address,
+                        ImageUrl = h.ImageUrl,
+                        PricePerMonth = h.PricePerMonth,
+                        IsRented = h.RenterId != null
+                    })
+                    .ToList();
+            }
+            else
+            {
+                houses = this.data.Houses
+                    .Where(h => h.RenterId == userId)
+                    .Select(h => new HouseViewModel
+                    {
+                        Id = h.Id,
+                        Title = h.Title,
+                        Address = h.Address,
+                        ImageUrl = h.ImageUrl,
+                        PricePerMonth = h.PricePerMonth,
+                        IsRented = h.RenterId != null
+                    })
+                    .ToList();
+            }
+
+            return View(houses);
+        }
+
+        public IActionResult Details(int id)
+        {
+            if (!this.data.Houses.Any(h => h.Id == id))
+            {
+                return BadRequest();
+            }
+
+            var house = this.data.Houses
+                .Where(h => h.Id == id)
+                .Select(h => new HouseDetailsViewModel
+                {
+                    Id = h.Id,
+                    Title = h.Title,
+                    Address = h.Address,
+                    Description = h.Description,
+                    ImageUrl = h.ImageUrl,
+                    PricePerMonth = h.PricePerMonth,
+                    IsRented = h.RenterId != null,
+                    Category = h.Category.Name,
+                    Agent = new Models.Agents.AgentViewModel
+                    {
+                        PhoneNumber = h.Agent.PhoneNumber,
+                        Email = h.Agent.User.Email
+                    }
+                })
+                .First();
+
+            return View(house);
+        }
+    }
 }

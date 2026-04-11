@@ -1,10 +1,12 @@
-﻿namespace HouseRentingSystem.Models
+﻿namespace HouseRentingSystem.Models.Houses
 {
-	public class HouseViewModel
-	{
-		public int Id { get; set; }
-		public string Name { get; set; }
-		public string Address { get; set; }
-		public string ImageUrl { get; set; }
-	}
+    public class HouseViewModel
+    {
+        public int Id { get; init; }
+        public string Title { get; init; } = null!;
+        public string Address { get; init; } = null!;
+        public string ImageUrl { get; init; } = null!;
+        public decimal PricePerMonth { get; init; }
+        public bool IsRented { get; init; }
+    }
 }
