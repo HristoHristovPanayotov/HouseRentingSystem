@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using HouseRentingSystem.Data;
+using HouseRentingSystem.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,7 +35,7 @@ else
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
-
+app.UseCustomTime();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
